@@ -44,7 +44,7 @@ public class ControllerServlet extends HttpServlet{
     }
 
     /**
-     * Post operation
+     * Post request
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -52,7 +52,7 @@ public class ControllerServlet extends HttpServlet{
     }
 
     /**
-     * Get operation
+     * Get request
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
