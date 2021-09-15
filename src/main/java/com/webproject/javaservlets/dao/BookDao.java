@@ -32,7 +32,7 @@ public class BookDao {
     }
 
     /**
-     * Connect to database
+     * Connect to the database
      */
     protected void connect() throws SQLException {
         if (jdbcConnection == null || jdbcConnection.isClosed()) {
@@ -47,7 +47,7 @@ public class BookDao {
     }
 
     /**
-     * Disconnect from database
+     * Disconnect from the database
      */
     protected void disconnect() throws SQLException {
         if (jdbcConnection != null && !jdbcConnection.isClosed()) {
