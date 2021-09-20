@@ -1,5 +1,6 @@
 package com.webproject.javaservlets.dao;
 
+import com.webproject.javaservlets.manager.ResourceManager;
 import com.webproject.javaservlets.model.Book;
 
 import java.sql.*;
@@ -13,12 +14,6 @@ public class BookDao {
     private final String jdbcPassword;
     private Connection jdbcConnection;
 
-    private final String ID = "id";
-    private final String TITLE = "title";
-    private final String AUTHOR = "author";
-    private final String PRICE = "price";
-
-    private final String DRIVER = "org.postgresql.Driver";
     private final String INSERT_BOOK_QUERY = "INSERT INTO book (title, author, price) VALUES (?, ?, ?)";
     private final String ALL_BOOKS_QUERY = "SELECT * FROM book ORDER BY id";
     private final String DELETE_BOOK_QUERY = "DELETE FROM book WHERE id = ?";
@@ -37,7 +32,7 @@ public class BookDao {
     protected void connect() throws SQLException {
         if (jdbcConnection == null || jdbcConnection.isClosed()) {
             try {
-                Class.forName(DRIVER);
+                Class.forName("org.postgresql.Driver");
             } catch (ClassNotFoundException e) {
                 throw new SQLException(e);
             }
@@ -61,9 +56,9 @@ public class BookDao {
     public boolean insertBook(Book book) throws SQLException {
         connect();
         PreparedStatement statement = jdbcConnection.prepareStatement(INSERT_BOOK_QUERY);
-        statement.setString(1, book.getTitle());
-        statement.setString(2, book.getAuthor());
-        statement.setFloat(3, book.getPrice());
+        statement.setString(ResourceManager.parameterIndex1, book.getTitle());
+        statement.setString(ResourceManager.parameterIndex2, book.getAuthor());
+        statement.setFloat(ResourceManager.parameterIndex3, book.getPrice());
 
         boolean rowInserted = statement.executeUpdate() > 0;
         statement.close();
@@ -82,10 +77,10 @@ public class BookDao {
         ResultSet resultSet = statement.executeQuery(ALL_BOOKS_QUERY);
 
         while (resultSet.next()) {
-            int id = resultSet.getInt(ID);
-            String title = resultSet.getString(TITLE);
-            String author = resultSet.getString(AUTHOR);
-            float price = resultSet.getFloat(PRICE);
+            int id = resultSet.getInt(ResourceManager.ID);
+            String title = resultSet.getString(ResourceManager.TITLE);
+            String author = resultSet.getString(ResourceManager.AUTHOR);
+            float price = resultSet.getFloat(ResourceManager.PRICE);
 
             Book book = new Book(id, title, author, price);
             listBook.add(book);
@@ -102,7 +97,7 @@ public class BookDao {
     public boolean deleteBook(Book book) throws SQLException {
         connect();
         PreparedStatement statement = jdbcConnection.prepareStatement(DELETE_BOOK_QUERY);
-        statement.setInt(1, book.getId());
+        statement.setInt(ResourceManager.parameterIndex1, book.getId());
 
         boolean rowDeleted = statement.executeUpdate() > 0;
         statement.close();
@@ -116,10 +111,10 @@ public class BookDao {
     public boolean updateBook(Book book) throws SQLException {
         connect();
         PreparedStatement statement = jdbcConnection.prepareStatement(UPDATE_BOOK_QUERY);
-        statement.setString(1, book.getTitle());
-        statement.setString(2, book.getAuthor());
-        statement.setFloat(3, book.getPrice());
-        statement.setInt(4, book.getId());
+        statement.setString(ResourceManager.parameterIndex1, book.getTitle());
+        statement.setString(ResourceManager.parameterIndex2, book.getAuthor());
+        statement.setFloat(ResourceManager.parameterIndex3, book.getPrice());
+        statement.setInt(ResourceManager.parameterIndex4, book.getId());
 
         boolean rowUpdated = statement.executeUpdate() > 0;
         statement.close();
@@ -135,13 +130,13 @@ public class BookDao {
         connect();
 
         PreparedStatement statement = jdbcConnection.prepareStatement(GET_BOOK_QUERY);
-        statement.setInt(1, id);
+        statement.setInt(ResourceManager.parameterIndex1, id);
 
         ResultSet resultSet = statement.executeQuery();
         if (resultSet.next()) {
-            String title = resultSet.getString(TITLE);
-            String author = resultSet.getString(AUTHOR);
-            float price = resultSet.getFloat(PRICE);
+            String title = resultSet.getString(ResourceManager.TITLE);
+            String author = resultSet.getString(ResourceManager.AUTHOR);
+            float price = resultSet.getFloat(ResourceManager.PRICE);
             book = new Book(id, title, author, price);
         }
         resultSet.close();

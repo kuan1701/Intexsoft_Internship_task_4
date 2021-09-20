@@ -1,6 +1,7 @@
 package com.webproject.javaservlets.controller;
 
 import com.webproject.javaservlets.dao.BookDao;
+import com.webproject.javaservlets.manager.ResourceManager;
 import com.webproject.javaservlets.model.Book;
 
 import java.io.IOException;
@@ -17,20 +18,6 @@ public class ControllerServlet extends HttpServlet{
 
     private static final long serialVersionUID = 1L;
     private BookDao bookDAO;
-
-    private final String ID = "id";
-    private final String BOOK = "book";
-    private final String TITLE = "title";
-    private final String AUTHOR = "author";
-    private final String PRICE = "price";
-    private final String LIST = "list";
-    private final String BOOK_LIST = "bookList";
-
-    private final String NEW = "/new";
-    private final String INSERT = "/insert";
-    private final String DELETE = "/delete";
-    private final String EDIT = "/edit";
-    private final String UPDATE = "/update";
 
     /**
      * Initializing the database
@@ -60,19 +47,19 @@ public class ControllerServlet extends HttpServlet{
 
         try {
             switch (action) {
-                case NEW:
+                case ResourceManager.NEW:
                     showNewForm(request, response);
                     break;
-                case INSERT:
+                case ResourceManager.INSERT:
                     insertBook(request, response);
                     break;
-                case DELETE:
+                case ResourceManager.DELETE:
                     deleteBook(request, response);
                     break;
-                case EDIT:
+                case ResourceManager.EDIT:
                     showEditForm(request, response);
                     break;
-                case UPDATE:
+                case ResourceManager.UPDATE:
                     updateBook(request, response);
                     break;
                 default:
@@ -90,8 +77,8 @@ public class ControllerServlet extends HttpServlet{
     private void listBook(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
         List<Book> bookList = bookDAO.listAllBooks();
-        request.setAttribute(BOOK_LIST, bookList);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("BookList.jsp");
+        request.setAttribute(ResourceManager.BOOK_LIST, bookList);
+        RequestDispatcher dispatcher = request.getRequestDispatcher(ResourceManager.BOOK_LIST_VIEW);
         dispatcher.forward(request, response);
     }
 
@@ -100,7 +87,7 @@ public class ControllerServlet extends HttpServlet{
      */
     private void showNewForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher dispatcher = request.getRequestDispatcher("BookForm.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher(ResourceManager.BOOK_FORM_VIEW);
         dispatcher.forward(request, response);
     }
 
@@ -109,12 +96,11 @@ public class ControllerServlet extends HttpServlet{
      */
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter(ID));
+        int id = Integer.parseInt(request.getParameter(ResourceManager.ID));
         Book existingBook = bookDAO.getBook(id);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("BookForm.jsp");
-        request.setAttribute(BOOK, existingBook);
+        RequestDispatcher dispatcher = request.getRequestDispatcher(ResourceManager.BOOK_LIST_VIEW);
+        request.setAttribute(ResourceManager.BOOK, existingBook);
         dispatcher.forward(request, response);
-
     }
 
     /**
@@ -122,13 +108,13 @@ public class ControllerServlet extends HttpServlet{
      */
     private void insertBook(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
-        String title = request.getParameter(TITLE);
-        String author = request.getParameter(AUTHOR);
-        float price = Float.parseFloat(request.getParameter(PRICE));
+        String title = request.getParameter(ResourceManager.TITLE);
+        String author = request.getParameter(ResourceManager.AUTHOR);
+        float price = Float.parseFloat(request.getParameter(ResourceManager.PRICE));
 
         Book newBook = new Book(title, author, price);
         bookDAO.insertBook(newBook);
-        response.sendRedirect(LIST);
+        response.sendRedirect(ResourceManager.LIST);
     }
 
     /**
@@ -136,14 +122,14 @@ public class ControllerServlet extends HttpServlet{
      */
     private void updateBook(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
-        int id = Integer.parseInt(request.getParameter(ID));
-        String title = request.getParameter(TITLE);
-        String author = request.getParameter(AUTHOR);
-        float price = Float.parseFloat(request.getParameter(PRICE));
+        int id = Integer.parseInt(request.getParameter(ResourceManager.ID));
+        String title = request.getParameter(ResourceManager.TITLE);
+        String author = request.getParameter(ResourceManager.AUTHOR);
+        float price = Float.parseFloat(request.getParameter(ResourceManager.PRICE));
 
         Book book = new Book(id, title, author, price);
         bookDAO.updateBook(book);
-        response.sendRedirect(LIST);
+        response.sendRedirect(ResourceManager.LIST);
     }
 
     /**
@@ -151,10 +137,10 @@ public class ControllerServlet extends HttpServlet{
      */
     private void deleteBook(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
-        int id = Integer.parseInt(request.getParameter(ID));
+        int id = Integer.parseInt(request.getParameter(ResourceManager.ID));
 
         Book book = new Book(id);
         bookDAO.deleteBook(book);
-        response.sendRedirect(LIST);
+        response.sendRedirect(ResourceManager.LIST);
     }
 }
