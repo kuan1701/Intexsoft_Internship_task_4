@@ -22,7 +22,6 @@
             <th>Price</th>
             <th>Actions</th>
         </tr>
-        <jsp:useBean id="bookList" scope="request" type="java.util.List"/>
         <c:forEach var="book" items="${bookList}">
             <tr>
                 <td><c:out value="${book.id}" /></td>

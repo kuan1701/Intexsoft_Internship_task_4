@@ -13,6 +13,7 @@ public class BookDao {
     private final String jdbcUsername;
     private final String jdbcPassword;
     private Connection jdbcConnection;
+    private PreparedStatement statement;
 
     private final String INSERT_BOOK_QUERY = "INSERT INTO book (title, author, price) VALUES (?, ?, ?)";
     private final String ALL_BOOKS_QUERY = "SELECT * FROM book ORDER BY id";
@@ -55,7 +56,7 @@ public class BookDao {
      */
     public boolean insertBook(Book book) throws SQLException {
         connect();
-        PreparedStatement statement = jdbcConnection.prepareStatement(INSERT_BOOK_QUERY);
+        statement = jdbcConnection.prepareStatement(INSERT_BOOK_QUERY);
         statement.setString(ResourceManager.parameterIndex1, book.getTitle());
         statement.setString(ResourceManager.parameterIndex2, book.getAuthor());
         statement.setFloat(ResourceManager.parameterIndex3, book.getPrice());
@@ -70,11 +71,11 @@ public class BookDao {
      * Get all books from database
      */
     public List<Book> listAllBooks() throws SQLException {
-        List<Book> listBook = new ArrayList<>();
         connect();
 
         Statement statement = jdbcConnection.createStatement();
         ResultSet resultSet = statement.executeQuery(ALL_BOOKS_QUERY);
+        List<Book> listBook = new ArrayList<>();
 
         while (resultSet.next()) {
             int id = resultSet.getInt(ResourceManager.ID);
@@ -96,7 +97,7 @@ public class BookDao {
      */
     public boolean deleteBook(Book book) throws SQLException {
         connect();
-        PreparedStatement statement = jdbcConnection.prepareStatement(DELETE_BOOK_QUERY);
+        statement = jdbcConnection.prepareStatement(DELETE_BOOK_QUERY);
         statement.setInt(ResourceManager.parameterIndex1, book.getId());
 
         boolean rowDeleted = statement.executeUpdate() > 0;
@@ -110,7 +111,7 @@ public class BookDao {
      */
     public boolean updateBook(Book book) throws SQLException {
         connect();
-        PreparedStatement statement = jdbcConnection.prepareStatement(UPDATE_BOOK_QUERY);
+        statement = jdbcConnection.prepareStatement(UPDATE_BOOK_QUERY);
         statement.setString(ResourceManager.parameterIndex1, book.getTitle());
         statement.setString(ResourceManager.parameterIndex2, book.getAuthor());
         statement.setFloat(ResourceManager.parameterIndex3, book.getPrice());
@@ -126,10 +127,10 @@ public class BookDao {
      * Get book from database
      */
     public Book getBook(Integer id) throws SQLException {
-        Book book = null;
         connect();
+        Book book = null;
 
-        PreparedStatement statement = jdbcConnection.prepareStatement(GET_BOOK_QUERY);
+        statement = jdbcConnection.prepareStatement(GET_BOOK_QUERY);
         statement.setInt(ResourceManager.parameterIndex1, id);
 
         ResultSet resultSet = statement.executeQuery();

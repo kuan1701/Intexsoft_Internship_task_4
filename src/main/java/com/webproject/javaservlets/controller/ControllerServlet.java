@@ -98,7 +98,7 @@ public class ControllerServlet extends HttpServlet{
             throws SQLException, ServletException, IOException {
         int id = Integer.parseInt(request.getParameter(ResourceManager.ID));
         Book existingBook = bookDAO.getBook(id);
-        RequestDispatcher dispatcher = request.getRequestDispatcher(ResourceManager.BOOK_LIST_VIEW);
+        RequestDispatcher dispatcher = request.getRequestDispatcher(ResourceManager.BOOK_FORM_VIEW);
         request.setAttribute(ResourceManager.BOOK, existingBook);
         dispatcher.forward(request, response);
     }
